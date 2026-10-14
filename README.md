@@ -1,4 +1,8 @@
-# not-a-cad
+<p align="center"><img src="docs/images/logo.svg" width="96" height="96" alt="not-a-cad logo"></p>
+
+<h1 align="center">not-a-cad</h1>
+
+<p align="center"><b>Live demo: <a href="https://cad.baranov.org">cad.baranov.org</a></b> · <a href="https://cad.baranov.org/s/bm5vcl7BWNGm317kYn42-Q">example model</a></p>
 
 **A CAD you don't draw in.** Your AI agent (Claude Code, Cursor, Claude Desktop, or any MCP client) builds parametric solid models over [MCP](https://modelcontextprotocol.io). You watch them appear in your browser, tweak the parameters the agent exposes, measure, cut sections, export STL / 3MF / STEP / OBJ, and share a link anyone can open and remix.
 
