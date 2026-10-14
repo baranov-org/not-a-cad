@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`codegen > boolean references inputs 1`] = `
+"// cut plate with hole1, hole2
+const main = () => part("plate").cut(part("hole1")).cut(part("hole2"));"
+`;
+
+exports[`codegen > fillet/chamfer to new part 1`] = `
+"// fillet r=2
+const main = () => part("box").fillet(2);"
+`;
+
+exports[`codegen > fillet/chamfer to new part 2`] = `
+"// chamfer d=1
+const main = () => part("box").chamfer(1, (e) => e.inDirection("Z"));"
+`;
+
+exports[`codegen > in-place wrapping keeps refs and nests 1`] = `
+"// transform
+const prev = (() => {
+  // fillet r=1
+  const prev = (() => {
+    const main = () => part("a").fuse(part("b"));
+    return main;
+  })();
+  const main = () => prev().fillet(1, (e) => e.inPlane("XY", 5));
+  return main;
+})();
+const main = () => prev().rotate(90, [0, 0, 0], [1, 0, 0]).translate([1, 2, 3]);"
+`;
+
+exports[`codegen > primitives 1`] = `
+"// box 10x20x5, centred in XY, base on Z=0
+const main = () => makeBaseBox(10, 20, 5);"
+`;
+
+exports[`codegen > primitives 2`] = `
+"// cylinder r=3 h=7, base on Z=0
+const main = () => makeCylinder(3, 7);"
+`;
+
+exports[`codegen > primitives 3`] = `
+"// sphere r=4
+const main = () => makeSphere(4);"
+`;
+
+exports[`codegen > primitives 4`] = `
+"// cone r1=5 r2=0 h=9, base on Z=0
+const main = () =>
+  draw([0, 0]).lineTo([5, 0]).lineTo([0, 9]).close()
+    .sketchOnPlane("XZ").revolve([0, 0, 1]);"
+`;
+
+exports[`codegen > primitives 5`] = `
+"// cone r1=0 r2=3 h=9, base on Z=0
+const main = () =>
+  draw([0, 0]).lineTo([3, 9]).lineTo([0, 9]).close()
+    .sketchOnPlane("XZ").revolve([0, 0, 1]);"
+`;
+
+exports[`codegen > primitives 6`] = `
+"// torus R=10 r=2, axis Z
+const main = () =>
+  drawCircle(2).translate(10, 0)
+    .sketchOnPlane("XZ").revolve([0, 0, 1]);"
+`;

@@ -1,0 +1,32 @@
+{
+  "name": "not-a-cad",
+  "version": "0.1.0",
+  "description": "Browser CAD driven by AI agents over MCP",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n server,web \"pnpm --filter server dev\" \"pnpm --filter web dev\"",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "eslint .",
+    "start": "pnpm --filter server start",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@playwright/test": "1.63.0",
+    "concurrently": "^10.0.5",
+    "eslint": "^9.39.0",
+    "fflate": "^0.8.3",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.71.1",
+    "vitest": "^4.0.0"
+  },
+  "packageManager": "pnpm@10.30.3",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baranov-org/not-a-cad.git"
+  }
+}

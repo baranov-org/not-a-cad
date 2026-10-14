@@ -1,0 +1,38 @@
+{
+  "name": "web",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baranov-org/not-a-cad.git",
+    "directory": "web"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p . && vite build",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
+    "comlink": "^4.4.2",
+    "fflate": "^0.8.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "replicad": "^1.1.0",
+    "replicad-opencascadejs": "^1.1.0",
+    "shared": "workspace:*",
+    "three": "^0.186.1",
+    "three-stdlib": "^2.36.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.3"
+  }
+}

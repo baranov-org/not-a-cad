@@ -1,0 +1,86 @@
+/* Tool cards (Claude Design "Section Card"): shared by Measure and Section, on top of the button system */
+
+/* Column in the viewport's top-right. Order is fixed: Section, then Measure. */
+.tool-stack{position:absolute;z-index:5;top:var(--stack-top,12px);right:12px;bottom:var(--stack-bottom,64px);width:min(288px,calc(100% - 24px));display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
+.tool-stack>*{pointer-events:auto}
+/* Phone: the sheet slot sits under the viewport and shrinks it; pills float above the toolbar */
+.tool-sheet-slot{flex:0 0 auto;max-height:62%;min-height:0;display:flex;flex-direction:column}
+.tool-pills{position:absolute;left:0;right:0;bottom:64px;display:flex;justify-content:center;gap:8px;pointer-events:none}
+.tool-pills>*{pointer-events:auto}
+
+/* Card · sm controls inside */
+.tool-card{--b-h:28px;--b-px:10px;--b-r:6px;--b-fs:12px;--b-icon:14px;--b-gap:5px;--row-h:32px;--fact-h:24px;--num-w:88px;--thumb:16px;--range-h:20px;
+  box-sizing:border-box;width:100%;flex:0 1 auto;min-height:0;display:flex;flex-direction:column;gap:10px;padding:12px;
+  background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+/* Sheet · lg controls, 44 px rows */
+.tool-card.is-sheet{--b-h:44px;--b-px:16px;--b-r:10px;--b-fs:15px;--b-icon:18px;--b-gap:8px;--row-h:44px;--fact-h:34px;--num-w:112px;--thumb:24px;--range-h:44px;
+  flex:1 1 auto;padding:10px 16px calc(22px + env(safe-area-inset-bottom));border-width:1px 0 0;border-radius:16px 16px 0 0;box-shadow:var(--sheet-shadow)}
+.tool-grab{align-self:center;width:36px;height:4px;border-radius:4px;background:var(--line-2);margin:-2px 0}
+
+.tool-head{display:flex;align-items:center;gap:8px;min-height:28px;margin:-4px -6px -4px 0}
+.is-sheet .tool-head{--b-h:36px;--b-px:10px;--b-r:8px;--b-fs:13px;--b-icon:16px}
+.tool-title{margin:0;font-size:13px;font-weight:700}
+.is-sheet .tool-title{font-size:15px}
+.tool-status{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.tool-head>.grow{flex:1}
+.tool-body{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;display:flex;flex-direction:column;margin:0 -4px;padding:0 4px}
+.tool-hint{margin:-2px 0 0;font-size:11px;color:var(--ink-3)}
+.is-sheet .tool-hint{font-size:12px}
+
+/* Inset block: Measure result, Section editor, notes */
+.tool-inset{display:flex;flex-direction:column;gap:10px;padding:10px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.tool-note{font-size:12px;line-height:1.45;color:var(--ink-2)}
+
+/* Rows: Measure picks, Section planes */
+.tool-item{border-top:1px solid var(--line)}
+.tool-row{display:flex;align-items:center;gap:8px;min-height:var(--row-h)}
+.tool-row-main{flex:1;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tool-badge{flex:0 0 18px;height:18px;border-radius:50%;color:#fff;display:grid;place-items:center;font:700 10px var(--mono)}
+.tool-name{font-size:13px;font-weight:700;white-space:nowrap}
+.tool-key{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 12.5px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.tool-row.is-muted .tool-name,.tool-row.is-muted .tool-key{color:var(--ink-3)}
+.tool-row.is-muted .tool-badge{opacity:.45}
+.tool-chev{flex:none;width:12px;height:12px;color:var(--ink-3);transition:transform .15s}
+[aria-expanded=true]>.tool-chev{transform:rotate(180deg)}
+.tool-actions{margin-right:-4px}
+.tool-ref{display:block;max-width:100%;margin:-6px 0 6px 26px;padding:0;border:0;background:none;font:400 11px var(--mono);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.tool-fact{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:4px;min-height:var(--fact-h);font-size:12px;color:var(--ink-2)}
+.tool-fact>b{justify-self:end;font:500 12.5px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+.tool-big{font:600 26px/1.15 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tool-add{padding-top:6px}
+.tool-add>.btn{margin-left:-4px}
+
+/* Section editor */
+.tool-editor-row{display:flex;gap:6px}
+.tool-editor-row>.seg{flex:1}
+.tool-editor>.seg{display:flex}
+
+/* Value control: label + fixed-width field, slider underneath. The field never resizes, so the slider never moves. */
+.tool-ctl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 8px}
+.tool-ctl>label{font-size:12px;color:var(--ink-2);white-space:nowrap}
+.is-sheet .tool-ctl>label{font-size:14px}
+.tool-ctl>.tool-range,.tool-ctl>.tool-limit{grid-column:1 / -1}
+.tool-limit{font-size:11px;color:var(--ink-2);margin-top:-2px}
+.num{box-sizing:border-box;display:inline-flex;align-items:center;gap:4px;width:var(--num-w);height:var(--b-h);padding:0 8px;border:1px solid var(--line-2);border-radius:var(--b-r);background:var(--raised);font:500 12.5px var(--mono);font-variant-numeric:tabular-nums;cursor:text}
+.is-sheet .num{font-size:15px;padding:0 12px}
+.num>input{flex:1;min-width:0;width:0;padding:0;border:0;outline:0;background:none;color:var(--ink);font:inherit;text-align:right}
+.num>span{flex:0 0 2ch;color:var(--ink-3)}
+.num:focus-within{outline:2px solid var(--focus);outline-offset:1px}
+.num.is-limit{border-color:var(--ink-2)}
+.tool-range{-webkit-appearance:none;appearance:none;display:block;width:100%;height:var(--range-h);margin:0;background:none;cursor:pointer;--lo:50%;--hi:50%}
+.tool-range::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--line) var(--lo),var(--ink-2) var(--lo) var(--hi),var(--line) var(--hi))}
+.tool-range::-moz-range-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--line) var(--lo),var(--ink-2) var(--lo) var(--hi),var(--line) var(--hi))}
+.tool-range::-webkit-slider-thumb{-webkit-appearance:none;box-sizing:border-box;width:var(--thumb);height:var(--thumb);margin-top:calc(2px - var(--thumb) / 2);border-radius:50%;background:var(--raised);border:1.5px solid var(--ink);box-shadow:0 1px 2px rgba(20,24,30,.15)}
+.tool-range::-moz-range-thumb{box-sizing:border-box;width:var(--thumb);height:var(--thumb);border-radius:50%;background:var(--raised);border:1.5px solid var(--ink)}
+.tool-range:focus-visible{outline:none}
+.tool-range:focus-visible::-webkit-slider-thumb{outline:2px solid var(--focus);outline-offset:2px}
+
+/* Pill: minimised card */
+.tool-pill{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:999px;background:var(--raised);box-shadow:var(--shadow);color:var(--ink);font:inherit;white-space:nowrap;cursor:pointer}
+.tool-pill.is-touch{height:44px}
+.tool-pill .lbl{font-size:12px;color:var(--ink-2)}
+.tool-pill .val{font:600 14px var(--mono);font-variant-numeric:tabular-nums}
+.tool-pill .unit{font-size:12px;color:var(--ink-3)}
+.tool-dots{display:flex;gap:3px}
+.tool-dot{box-sizing:border-box;width:8px;height:8px;border-radius:50%;background:currentColor}
+.tool-dot.is-off{background:none;border:1.5px solid currentColor}

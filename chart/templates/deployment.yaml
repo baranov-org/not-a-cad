@@ -1,0 +1,68 @@
+{{- $mode := .Values.database.mode }}
+{{- if not (has $mode (list "embedded" "cnpg" "external")) }}
+{{- fail "database.mode must be embedded, cnpg or external" }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nac.fullname" . }}
+  labels: {{- include "nac.labels" . | nindent 4 }}
+spec:
+  replicas: 1  # browser sockets live in one process
+  strategy:
+    type: Recreate  # RWO volume
+  selector:
+    matchLabels: {{- include "nac.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "nac.selectorLabels" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: not-a-cad
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - { name: PORT, value: "8787" }
+            - { name: DATA_DIR, value: /data }
+            {{- with include "nac.publicUrl" . }}
+            - { name: PUBLIC_URL, value: {{ . | quote }} }
+            {{- end }}
+            {{- with include "nac.dbSecret" . }}
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: {{ . }}, key: {{ $.Values.database.secretKey }} } }
+            {{- end }}
+            {{- range $k, $v := .Values.limits }}
+            - { name: {{ $k }}, value: {{ $v | quote }} }
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - { name: http, containerPort: 8787 }
+          readinessProbe:
+            httpGet: { path: /ready, port: http }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - { name: data, mountPath: /data }
+            - { name: tmp, mountPath: /tmp }  # tsx compile cache
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 64Mi }
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "nac.fullname" . }}-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

@@ -1,0 +1,18 @@
+{{- if eq .Values.database.mode "cnpg" }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "nac.fullname" . }}-pg
+  labels: {{- include "nac.labels" . | nindent 4 }}
+spec:
+  instances: {{ .Values.database.cnpg.instances }}
+  bootstrap:
+    initdb:
+      database: notacad
+      owner: notacad
+  storage:
+    size: {{ .Values.database.cnpg.storage.size }}
+    {{- with .Values.database.cnpg.storage.storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+{{- end }}

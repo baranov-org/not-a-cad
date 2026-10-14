@@ -1,0 +1,10 @@
+apiVersion: v2
+name: not-a-cad
+description: Browser CAD driven by AI agents over MCP. The CAD kernel runs in the browser; the server relays agent calls and stores projects.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/baranov-org/not-a-cad
+sources:
+  - https://github.com/baranov-org/not-a-cad
+keywords: [cad, mcp, ai, opencascade]

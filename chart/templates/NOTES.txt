@@ -1,0 +1,6 @@
+{{- $url := include "nac.publicUrl" . }}
+{{- if not $url }}{{ $url = ternary (printf "http://%s" .Values.ingress.host) (printf "http://localhost:8787 (kubectl -n %s port-forward svc/%s 8787:%v)" .Release.Namespace (include "nac.fullname" .) .Values.service.port) .Values.ingress.enabled }}{{ end }}
+not-a-cad is at {{ $url }}
+
+Connect an agent (Claude Code):
+  claude mcp add --transport http not-a-cad <origin>/mcp

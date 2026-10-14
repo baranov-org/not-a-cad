@@ -1,0 +1,43 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "nac.fullname" . }}
+  labels: {{- include "nac.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "nac.selectorLabels" . | nindent 6 }}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.ingressNamespace }}
+          podSelector:
+            matchLabels: {{- toYaml .Values.networkPolicy.ingressPodLabels | nindent 14 }}
+      ports:
+        - { port: http, protocol: TCP }
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.dnsNamespace }}
+          podSelector:
+            matchLabels: {{- toYaml .Values.networkPolicy.dnsPodLabels | nindent 14 }}
+      ports:
+        {{- range .Values.networkPolicy.dnsPorts }}
+        - { port: {{ . }}, protocol: UDP }
+        - { port: {{ . }}, protocol: TCP }
+        {{- end }}
+    {{- if eq .Values.database.mode "cnpg" }}
+    - to:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: {{ include "nac.fullname" . }}-pg
+      ports:
+        - { port: 5432, protocol: TCP }
+    {{- end }}
+    {{- with .Values.networkPolicy.extraEgress }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}

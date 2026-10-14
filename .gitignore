@@ -1,0 +1,13 @@
+node_modules/
+dist/
+data/
+test-results/
+playwright-report/
+*.log
+
+# Kept locally, not published
+openspec/
+.claude/
+docs/design*
+.deploy/
+.env

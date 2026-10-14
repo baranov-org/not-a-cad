@@ -1,0 +1,88 @@
+image:
+  repository: ghcr.io/baranov-org/not-a-cad
+  tag: ""  # defaults to the chart's appVersion
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Public origin for OAuth metadata, agent links and share pages; empty = from the request (X-Forwarded-* headers)
+publicUrl: ""
+
+# Database
+#   embedded: PGlite on the data volume, no dependencies (default)
+#   cnpg:     a CloudNativePG cluster created by this chart (needs the CNPG operator)
+#   external: DATABASE_URL from an existing secret
+database:
+  mode: embedded
+  existingSecret: ""
+  secretKey: uri
+  cnpg:
+    instances: 1
+    storage:
+      size: 2Gi
+      storageClass: ""  # cluster default
+
+# Abuse limits (see server/src/limits.ts)
+limits:
+  MAX_SESSIONS: "2000"
+  MAX_SESSION_BYTES: "1000000"
+  MAX_TOTAL_BYTES: "200000000"
+  MAX_CONNECTIONS: "300"
+  MAX_CONNECTIONS_PER_IP: "10"
+  MCP_PER_MINUTE: "240"
+  WS_PER_MINUTE: "30"
+  OAUTH_PER_MINUTE: "60"
+
+extraEnv: []  # [{ name: AUTH_REQUEST_TTL_MS, value: "120000" }]
+
+resources:
+  requests: { cpu: 20m, memory: 96Mi }
+  limits: { memory: 512Mi }
+
+# Data volume: embedded database and mesh bundle cache; RWO, single replica
+persistence:
+  enabled: true
+  storageClass: ""  # cluster default
+  size: 1Gi
+
+service:
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  host: cad.example.com
+  annotations:
+    # Long-lived browser WebSocket and agent requests
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "40m"  # share mesh bundles up to 32 MB
+  tls:
+    enabled: false
+    secretName: ""  # default: <fullname>-tls
+    clusterIssuer: ""  # cert-manager ClusterIssuer, if any
+
+# Only the ingress controller may connect; egress only to DNS and the database
+networkPolicy:
+  enabled: false
+  ingressNamespace: ingress-nginx
+  ingressPodLabels: { app.kubernetes.io/name: ingress-nginx }  # maps merge: set a default key to null to drop it
+  dnsNamespace: kube-system
+  dnsPodLabels: { k8s-app: kube-dns }
+  dnsPorts: [53]
+  extraEgress: []  # e.g. an external database
+
+# Hardened pod: non-root, read-only root fs, no API token
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile: { type: RuntimeDefault }
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities: { drop: [ALL] }

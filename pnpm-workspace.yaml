@@ -1,0 +1,6 @@
+packages:
+  - shared
+  - server
+  - web
+onlyBuiltDependencies:
+  - esbuild

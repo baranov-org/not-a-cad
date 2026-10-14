@@ -1,0 +1,103 @@
+/* Left panel: model info and parts tree (docs/design) */
+.model-head { display: flex; align-items: flex-start; gap: 10px; }
+.model-title { flex: 1; min-width: 0; font-size: 30px; line-height: 1.08; font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: break-word; hyphens: auto; }
+/* Narrow parts panel: a smaller title so words don't break */
+.side.left { container-type: inline-size; }
+@container (max-width: 280px) { .side.left .model-title { font-size: 22px; } }
+.model-title.untitled { color: var(--ink-3); }
+.model-desc { margin-top: 10px; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.model-chips { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.parts-head { display: flex; align-items: baseline; justify-content: space-between; margin: 26px 0 10px; }
+.parts-head h2 { font-size: 16px; font-weight: 700; }
+.empty-box { margin-top: 28px; padding: 18px; border: 1px dashed var(--line-2); border-radius: 10px; color: var(--ink-2); font-size: 14px; line-height: 1.5; }
+.side.right .empty-box { margin-top: 20px; }
+
+.tree { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.tree ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.asm-row { display: flex; align-items: center; gap: 4px; border-radius: 8px; }
+.asm-row.sel { background: var(--ink); color: var(--surface); }
+.asm-row .tog { flex: 0 0 28px; width: 28px; height: 36px; padding: 0; border: 0; background: none; color: inherit; }
+.asm-row .pick { flex: 1; min-width: 0; justify-content: space-between; gap: 8px; height: 36px; padding: 0 10px 0 0; border: 0; background: none; color: inherit; font-size: 14px; font-weight: 700; text-align: left; }
+.asm-row .pick > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.asm-row .meta { flex: 0 1 auto; font: 500 12px var(--mono); color: var(--ink-3); }
+.asm-row.sel .meta { color: var(--surface); }
+.inst-row { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 4px 0 32px; color: var(--ink-2); font-size: 13px; }
+.inst-row.off { color: var(--ink-3); }
+.inst-row .nm { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Visibility toggles: no ink fill in lists */
+.btn.eye { --b-fg: currentColor; }
+.btn.eye[aria-pressed=true] { --b-bg: transparent; --b-bg-h: var(--fill-h); --b-bg-a: var(--fill-a); --b-fg: currentColor; --b-bd: transparent; }
+.group-row { display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+.group-row.off { color: var(--ink-3); }
+.group-row .tog { flex: 1; min-width: 0; overflow: hidden; justify-content: flex-start; gap: 8px; height: 32px; padding: 0 4px; border: 0; background: none; color: inherit; text-align: left; }
+.group-row .tog .chev-ic { margin: 0 4px 0 6px; }
+.group-row .nm { font-size: 13px; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.group-row .eye, .inst-row .eye { flex: 0 0 28px; }
+.group-row .count { font: 500 11px var(--mono); color: var(--ink-3); }
+.group-row .reddot { width: 7px; height: 7px; border-radius: 50%; background: var(--err); }
+.group-row .building { font: 500 11px var(--mono); color: var(--accent); }
+.group-row .eye { color: var(--ink-2); }
+.part-row { position: relative; width: 100%; justify-content: flex-start; gap: 10px; height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent;
+  color: var(--ink); text-align: left; font-size: 14px; font-weight: 400; overflow: hidden; }
+.part-row.nested { padding-left: 28px; }
+.part-row.sel { background: var(--ink); color: var(--surface); }
+.part-row.hid { opacity: .5; }
+.part-row .sw { flex: 0 0 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15); }
+.part-row .nm { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+.part-row .st { font: 500 12px var(--mono); color: var(--ink-3); }
+.part-row.sel .st { color: var(--surface); }
+.part-row .st.building { color: var(--accent); }
+.part-row .st.failed { color: var(--err); }
+.part-row .pbar { position: absolute; left: 10px; right: 10px; bottom: 4px; height: 2px; border-radius: 2px; background: var(--line); }
+.part-row.nested .pbar { left: 28px; }
+.part-row .pbar > i { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+
+.errcard { margin: 2px 0 6px 28px; border: 1px solid var(--err); border-radius: 8px; background: var(--err-soft); font-size: 13px; }
+.errcard > button { width: 100%; height: auto; justify-content: flex-start; gap: 8px; padding: 8px 10px; border: 0; background: none; color: var(--ink); text-align: left; font-weight: 400; }
+.errcard > button b { font-weight: 700; color: var(--err); white-space: nowrap; }
+.errcard .line { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); }
+.errcard .full { padding: 0 10px 10px; display: flex; flex-direction: column; gap: 8px; }
+.errcard .err-msg { font: 12px/1.5 var(--mono); color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.errcard .where { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.errcard .where span { font: 11px var(--mono); color: var(--ink-3); }
+
+/* Right panel: parameters */
+.params-intro { margin: 4px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.params-intro h2 { margin: 16px 0 6px; font-size: 20px; font-weight: 800; color: var(--ink); }
+.params { display: flex; flex-direction: column; }
+.pgroup-head { width: 100%; height: auto; justify-content: flex-start; gap: 8px; margin-top: 22px; padding: 6px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  background: none; text-align: left; }
+.pgroup-head .t { flex: 1; font-size: 16px; font-weight: 700; }
+.pgroup-head .count { font: 500 12px var(--mono); color: var(--ink-3); }
+.param { margin-top: 16px; }
+.param .lab { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.param .lab label, .param .lab .l { font-size: 14px; font-weight: 700; }
+.param .lab .range { font: 500 12px var(--mono); color: var(--ink-3); }
+.param .lab .readout { font: 500 14px var(--mono); }
+.param.param-slider .lab { margin-bottom: 0; }
+.param .desc { display: block; margin-top: 6px; font-size: 12px; color: var(--ink-2); }
+.param .msg { display: block; margin-top: 6px; font-size: 12px; color: var(--err); font-weight: 600; }
+.stepper { display: flex; align-items: stretch; }
+.stepper.invalid { border-color: var(--err); }
+.stepper > .btn { font-size: 18px; font-weight: 400; }
+.stepper > .btn:first-child { border-right: 1px solid var(--line); }
+.stepper > .btn:last-child { border-left: 1px solid var(--line); }
+.stepper input { flex: 1; min-width: 0; height: auto; padding: 0 10px; border: 0; border-radius: 0; background: none; text-align: center; font: 500 15px var(--mono);
+  outline: none; appearance: textfield; -moz-appearance: textfield; }
+.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper .unit { display: grid; place-items: center; padding: 0 10px; font: 500 12px var(--mono); color: var(--ink-3); }
+.param input[type=range] { width: 100%; margin: 8px 0 0; accent-color: var(--accent); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 72px), 1fr)); gap: 8px; }
+.tiles > .btn { height: auto; min-height: var(--b-h); padding-block: 6px; white-space: normal; line-height: 1.2; text-align: center; }
+.param select, .param input[type=text] { width: 100%; }
+.param select { padding: 0 10px; }
+.switch-row { width: 100%; height: auto; justify-content: space-between; gap: 12px; padding: 0; border: 0; background: none; text-align: left; }
+.switch-row .l { font-size: 14px; font-weight: 700; }
+.switch { position: relative; flex: 0 0 40px; height: 24px; border-radius: 24px; background: var(--line-2); transition: background .15s; }
+.switch > i { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--raised); box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: left .15s; }
+.switch.on { background: var(--accent); }
+.switch.on > i { left: 19px; }
+.pfilter { width: 100%; margin-top: 12px; }
+/* Assembly groups (from the assembly tree) inside the Assembly entry */
+.asm-group .group-row { margin-top: 2px; padding-left: 28px; }
+.asm-group > ul { padding-left: 14px; }

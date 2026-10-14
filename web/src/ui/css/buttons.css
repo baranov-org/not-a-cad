@@ -1,0 +1,83 @@
+/* Button system: one .btn base (secondary), sizes sm / md / lg, variants, one selected rule (docs: Claude Design "Button System") */
+:root {
+  --accent-h: oklch(0.45 0.17 262); --accent-a: oklch(0.41 0.16 262); --on-accent: #fff;
+  --err-h: oklch(0.48 0.19 27); --err-a: oklch(0.44 0.18 27); --on-err: #fff;
+  --ink-h: #323840; --on-ink: #fff;
+  --fill-h: rgba(26, 30, 35, .06); --fill-a: rgba(26, 30, 35, .11);
+  --focus: var(--accent);
+}
+
+/* Sizes set variables only, so a size class on a group sizes every button inside; md is the default */
+:root, .btn-md { --b-h: 34px; --b-px: 12px; --b-r: 8px; --b-fs: 13px; --b-icon: 16px; --b-gap: 6px; }
+.btn-sm { --b-h: 28px; --b-px: 10px; --b-r: 6px; --b-fs: 12px; --b-icon: 14px; --b-gap: 5px; }
+.btn-lg { --b-h: 44px; --b-px: 16px; --b-r: 10px; --b-fs: 15px; --b-icon: 18px; --b-gap: 8px; }
+
+.btn {
+  --b-bg: var(--raised);
+  --b-bg-h: color-mix(in oklab, var(--raised), var(--ink) 6%);
+  --b-bg-a: color-mix(in oklab, var(--raised), var(--ink) 11%);
+  --b-fg: var(--ink);
+  --b-bd: var(--line-2);
+  position: relative; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--b-gap);
+  height: var(--b-h); min-width: var(--b-h); padding: 0 var(--b-px);
+  border: 1px solid var(--b-bd); border-radius: var(--b-r);
+  background: var(--b-bg); color: var(--b-fg);
+  font-family: inherit; font-size: var(--b-fs); font-weight: 600; line-height: 1;
+  white-space: nowrap; cursor: pointer; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .12s, border-color .12s, color .12s;
+}
+.btn svg { width: var(--b-icon); height: var(--b-icon); flex: none; }
+@media (hover: hover) { .btn:hover { background: var(--b-bg-h); } }
+.btn:active { background: var(--b-bg-a); }
+.btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.btn:disabled, .btn[aria-disabled=true] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+
+/* Variants */
+.btn-primary { --b-bg: var(--accent); --b-bg-h: var(--accent-h); --b-bg-a: var(--accent-a); --b-fg: var(--on-accent); --b-bd: transparent; font-weight: 700; }
+.btn-danger { --b-bg: var(--err); --b-bg-h: var(--err-h); --b-bg-a: var(--err-a); --b-fg: var(--on-err); --b-bd: transparent; font-weight: 700; }
+.btn-danger-soft { --b-bg: var(--err-soft); --b-bg-h: color-mix(in oklab, var(--err-soft), var(--err) 12%); --b-bg-a: color-mix(in oklab, var(--err-soft), var(--err) 22%); --b-fg: var(--err); --b-bd: var(--err); }
+.btn-ghost, .btn-toggle { --b-bg: transparent; --b-bg-h: var(--fill-h); --b-bg-a: var(--fill-a); --b-bd: transparent; }
+.btn-link { --b-bg: transparent; --b-bg-h: transparent; --b-bg-a: transparent; --b-bd: transparent; --b-fg: var(--accent); height: auto; min-width: 0; padding: 2px 0; border-radius: 3px; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+@media (hover: hover) { .btn-link:hover { --b-fg: var(--ink); } }
+.btn-link:active { --b-fg: var(--ink); }
+.btn-icon { width: var(--b-h); padding: 0; }
+.btn-block { width: 100%; justify-content: flex-start; }
+.btn-tile { height: auto; min-height: var(--b-h); flex-direction: column; gap: 3px; padding: 8px var(--b-px); white-space: normal; text-align: center; }
+.btn-tile small { font-size: 11px; font-weight: 500; color: var(--ink-3); }
+
+/* Groups */
+.toolbar { display: inline-flex; align-items: center; gap: 2px; padding: 4px; background: var(--raised); border: 1px solid var(--line); border-radius: calc(var(--b-r) + 4px); box-shadow: var(--shadow); }
+.toolbar .btn { flex: none; }
+.toolbar-sep { width: 1px; align-self: stretch; margin: 6px 4px; background: var(--line); }
+.seg { display: inline-flex; gap: 2px; padding: 2px; background: var(--canvas); border-radius: calc(var(--b-r) + 2px); }
+.seg > .btn { flex: 1 0 auto; --b-bg: transparent; --b-bg-h: var(--fill-h); --b-bg-a: var(--fill-a); --b-bd: transparent; }
+.btn-cluster { display: inline-flex; align-items: center; gap: 2px; }
+.btn-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.btn-row > .push { margin-inline-end: auto; }
+.tile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.sheet-footer { display: flex; gap: 8px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--raised); }
+.sheet-footer > .btn { flex: 1 1 0; }
+.stepper { display: inline-flex; height: var(--b-h); box-sizing: border-box; border: 1px solid var(--line-2); border-radius: var(--b-r); background: var(--raised); overflow: hidden; }
+.stepper > .btn { --b-r: 0; height: 100%; border: 0; }
+.stepper > .btn:focus-visible { outline-offset: -2px; }
+.toast .btn { color: inherit; --b-bg: transparent; --b-bd: currentColor; --b-bg-h: color-mix(in srgb, currentColor 14%, transparent); --b-bg-a: color-mix(in srgb, currentColor 24%, transparent); }
+
+/* Selected: one rule for every role. Keep last */
+.btn[aria-pressed=true], .btn[aria-checked=true], .btn[aria-selected=true] { --b-bg: var(--ink); --b-bg-h: var(--ink-h); --b-bg-a: var(--ink-h); --b-fg: var(--on-ink); --b-bd: var(--ink); }
+.btn-tile:is([aria-checked=true], [aria-selected=true]) small { color: inherit; opacity: .75; }
+
+/* Loading: label hidden, width kept */
+.btn[aria-busy=true] { color: transparent; pointer-events: none; }
+.btn[aria-busy=true]::before { content: ""; position: absolute; inset: 0; margin: auto; width: var(--b-icon); height: var(--b-icon); box-sizing: border-box; border-radius: 50%; border: 2px solid var(--b-fg); border-right-color: transparent; animation: btn-spin .7s linear infinite; }
+@keyframes btn-spin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .btn[aria-busy=true]::before { animation-duration: 2.4s; } }
+
+/* Touch: 44 px hit area without changing the visual size */
+@media (pointer: coarse) {
+  .btn::after { content: ""; position: absolute; inset: min(0px, calc((var(--b-h) - 44px) / 2)) 0; }
+  .btn-icon::after { inset: min(0px, calc((var(--b-h) - 44px) / 2)); }
+  .btn-link::after { inset: -12px -4px; }
+  .toolbar .btn::after, .seg .btn::after, .btn-cluster .btn::after { inset-inline: -1px; }
+}

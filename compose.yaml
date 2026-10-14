@@ -1,0 +1,44 @@
+# not-a-cad with PostgreSQL. Copy .env.example to .env, set POSTGRES_PASSWORD, then: docker compose up -d
+services:
+  app:
+    image: ghcr.io/baranov-org/not-a-cad:${NOT_A_CAD_TAG:-latest}
+    # build: .   # or build from this checkout
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    ports:
+      - "${PORT:-8787}:8787"
+    environment:
+      DATABASE_URL: postgres://notacad:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/notacad
+      PUBLIC_URL: ${PUBLIC_URL:-}
+      AUTH_REQUEST_TTL_MS: ${AUTH_REQUEST_TTL_MS:-}
+      MAX_SESSIONS: ${MAX_SESSIONS:-}
+      MAX_SESSION_BYTES: ${MAX_SESSION_BYTES:-}
+      MAX_TOTAL_BYTES: ${MAX_TOTAL_BYTES:-}
+      MAX_BUNDLE_BYTES: ${MAX_BUNDLE_BYTES:-}
+      MAX_CONNECTIONS: ${MAX_CONNECTIONS:-}
+      MAX_CONNECTIONS_PER_IP: ${MAX_CONNECTIONS_PER_IP:-}
+      MCP_PER_MINUTE: ${MCP_PER_MINUTE:-}
+      WS_PER_MINUTE: ${WS_PER_MINUTE:-}
+      OAUTH_PER_MINUTE: ${OAUTH_PER_MINUTE:-}
+    volumes:
+      - app-data:/data  # mesh bundle cache
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: notacad
+      POSTGRES_DB: notacad
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notacad -d notacad"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  app-data:
+  db-data:
